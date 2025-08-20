@@ -32,25 +32,25 @@ Text-Sentiment-Analysis-ML-App/
 ## Installation
 
 1. Clone the repository:
+    git clone https://github.com/AshanSandeepa1/Text-Sentiment-Analysis-ML-App.git
+    cd Text-Sentiment-Analysis-ML-App
 
-git clone https://github.com/AshanSandeepa1/Text-Sentiment-Analysis-ML-App.git
-cd Text-Sentiment-Analysis-ML-App
+2. Create and activate virtual environment
+    python3 -m venv venv
+    source venv/bin/activate      # Linux/Mac
+    venv\Scripts\activate         # Windows
 
-2. Install dependencies:
+3. Install dependencies:
+    pip install -r requirements.txt
 
-pip install -r requirements.txt
+4. Run the FastAPI app:
+    uvicorn main:app --reload
 
-3. Run the FastAPI app:
+5. Open the app in a browser:
+    http://127.0.0.1:8000
 
-uvicorn main:app --reload
-
-4. Open the app in a browser:
-
-http://127.0.0.1:8000
-
-5. Test API endpoints via FastAPI docs:
-
-http://127.0.0.1:8000/docs
+6. Test API endpoints via FastAPI docs:
+    http://127.0.0.1:8000/docs
 
 
 ## API Usage Examples
