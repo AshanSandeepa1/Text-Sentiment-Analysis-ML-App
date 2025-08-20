@@ -1,0 +1,14 @@
+2025-08-20 17:11:56,070 - INFO - Predict | input: good | cleaned: good | prediction: positive | confidence: 0.99
+2025-08-20 17:33:57,060 | INFO | Single predict | input: good | cleaned: good | prediction: positive | confidence: 0.99
+2025-08-20 17:34:06,509 | INFO | Batch predict | input: good | cleaned: good | prediction: positive | confidence: 0.99
+2025-08-20 17:34:06,509 | INFO | Batch predict | input: bad | cleaned: bad | prediction: negative | confidence: 0.97
+2025-08-20 17:34:06,510 | INFO | Batch predict | input: neutral | cleaned: neutral | prediction: positive | confidence: 0.7
+2025-08-20 17:45:19,836 | INFO | Batch predict | input: good | prediction: positive | confidence: 0.99
+2025-08-20 17:45:19,838 | INFO | Batch predict | input: bad | prediction: negative | confidence: 0.97
+2025-08-20 17:45:19,839 | INFO | Batch predict | input: good | prediction: positive | confidence: 0.99
+2025-08-20 17:45:19,840 | INFO | Batch predict | input: neutral | prediction: positive | confidence: 0.7
+2025-08-20 17:45:36,506 | INFO | Single predict | input: good | cleaned: good | prediction: positive | confidence: 0.99
+2025-08-20 17:46:03,956 | INFO | Batch predict | input: good | prediction: positive | confidence: 0.99
+2025-08-20 17:46:03,958 | INFO | Batch predict | input: bad | prediction: negative | confidence: 0.97
+2025-08-20 17:46:03,958 | INFO | Batch predict | input: good | prediction: positive | confidence: 0.99
+2025-08-20 17:46:03,959 | WARNING | Batch prediction invalid input: 123

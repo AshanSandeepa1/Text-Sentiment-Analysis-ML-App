@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sentiment Analysis</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen font-sans">
+
+<div class="bg-white p-8 rounded shadow-md w-full max-w-lg">
+    <h1 class="text-2xl font-bold mb-4 text-center">Sentiment Analyzer</h1>
+
+    <!-- Navbar / Toggle -->
+    <div class="flex justify-center mb-4">
+        <button id="singleBtn" onclick="showSingle()" class="px-4 py-2 rounded-l bg-blue-500 text-white hover:bg-blue-600">Single Input</button>
+        <button id="batchBtn" onclick="showBatch()" class="px-4 py-2 rounded-r bg-gray-200 hover:bg-gray-300">Batch Input</button>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="hidden text-center mb-2">
+        <span class="text-blue-500">⏳ Predicting...</span>
+    </div>
+
+    <!-- Single Input Box -->
+    <div id="singleBox">
+        <textarea id="tweet" rows="5" maxlength="5000" class="border rounded w-full p-2 mb-1" placeholder="Enter your text here..."></textarea>
+        <div class="text-right text-gray-500 text-sm mb-2">
+            <span id="charCount">0</span>/5000
+        </div>
+        <button onclick="predictSentiment()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full mb-4">Predict Sentiment</button>
+        <h2 id="result" class="text-center text-xl font-semibold"></h2>
+    </div>
+
+    <!-- Batch Input Box -->
+    <div id="batchBox" class="hidden">
+        <textarea id="batchTweets" rows="8" maxlength="5000" class="border rounded w-full p-2 mb-1" placeholder="Enter multiple texts, one per line..."></textarea>
+        <div class="text-right text-gray-500 text-sm mb-2">
+            <span id="batchCharCount">0</span>/5000
+        </div>
+        <button onclick="predictBatchSentiment()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full mb-4">Predict Batch</button>
+        <div id="batchResult" class="text-center text-lg font-semibold"></div>
+    </div>
+</div>
+
+<script>
+// Toggle boxes
+function showSingle() {
+    document.getElementById("singleBox").classList.remove("hidden");
+    document.getElementById("batchBox").classList.add("hidden");
+    document.getElementById("singleBtn").classList.replace("bg-gray-200","bg-blue-500");
+    document.getElementById("singleBtn").classList.replace("text-black","text-white");
+    document.getElementById("batchBtn").classList.replace("bg-green-500","bg-gray-200");
+    document.getElementById("batchBtn").classList.replace("text-white","text-black");
+}
+
+function showBatch() {
+    document.getElementById("batchBox").classList.remove("hidden");
+    document.getElementById("singleBox").classList.add("hidden");
+    document.getElementById("batchBtn").classList.replace("bg-gray-200","bg-green-500");
+    document.getElementById("batchBtn").classList.replace("text-black","text-white");
+    document.getElementById("singleBtn").classList.replace("bg-blue-500","bg-gray-200");
+    document.getElementById("singleBtn").classList.replace("text-white","text-black");
+}
+
+// Character counters
+const tweetBox = document.getElementById("tweet");
+const charCount = document.getElementById("charCount");
+tweetBox.addEventListener("input", () => { charCount.textContent = tweetBox.value.length; });
+
+const batchBox = document.getElementById("batchTweets");
+const batchCharCount = document.getElementById("batchCharCount");
+batchBox.addEventListener("input", () => { batchCharCount.textContent = batchBox.value.length; });
+
+// Show/Hide loader
+function showLoader() { document.getElementById("loader").classList.remove("hidden"); }
+function hideLoader() { document.getElementById("loader").classList.add("hidden"); }
+
+// Single prediction
+async function predictSentiment() {
+    const text = document.getElementById("tweet").value.trim();
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "";
+
+    if (!text) {
+        resultDiv.innerHTML = `<span style="color:red">Please enter some text!</span>`;
+        return;
+    }
+
+    showLoader();
+    try {
+        const response = await fetch("/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: text })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            resultDiv.innerHTML = `<span style="color:red">Error: ${data.detail}</span>`;
+        } else {
+            const color = data.prediction === "positive" ? "green" : "red";
+            resultDiv.innerHTML = `<span style="color:${color}">Prediction: ${data.prediction} | Confidence: ${data.confidence}</span>`;
+        }
+    } catch (error) {
+        resultDiv.innerHTML = `<span style="color:red">Unexpected error: ${error.message}</span>`;
+    } finally {
+        hideLoader();
+    }
+}
+
+// Batch prediction with table
+async function predictBatchSentiment() {
+    const texts = document.getElementById("batchTweets").value.trim().split("\n").filter(t => t.trim() !== "");
+    const resultDiv = document.getElementById("batchResult");
+    resultDiv.innerHTML = "";
+
+    if (!texts.length) {
+        resultDiv.innerHTML = `<span style="color:red">Please enter at least one text!</span>`;
+        return;
+    }
+
+    showLoader();
+    try {
+        const response = await fetch("/predict-batch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ texts: texts })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            resultDiv.innerHTML = `<span style="color:red">Error: ${data.detail}</span>`;
+        } else {
+            let html = `<table class="w-full text-left border-collapse">
+                        <tr class="bg-gray-200"><th class="border px-2 py-1">Text</th>
+                        <th class="border px-2 py-1">Prediction</th>
+                        <th class="border px-2 py-1">Confidence</th></tr>`;
+            data.results.forEach(r => {
+                const color = r.prediction === "positive" ? "green" : r.prediction === "negative" ? "red" : "gray";
+                html += `<tr>
+                            <td class="border px-2 py-1">${r.text}</td>
+                            <td class="border px-2 py-1" style="color:${color}">${r.prediction}</td>
+                            <td class="border px-2 py-1">${r.confidence}</td>
+                         </tr>`;
+            });
+            html += `</table>`;
+            resultDiv.innerHTML = html;
+        }
+    } catch (error) {
+        resultDiv.innerHTML = `<span style="color:red">Unexpected error: ${error.message}</span>`;
+    } finally {
+        hideLoader();
+    }
+}
+</script>
+
+<footer class="mt-8 text-gray-600 text-sm">
+    <p>&copy; 2025 Sentiment Analysis API by Ashan Sandeepa </p>
+</footer>
+</body>
+</html>
