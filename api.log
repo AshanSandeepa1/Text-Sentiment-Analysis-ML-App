@@ -12,3 +12,12 @@
 2025-08-20 17:46:03,958 | INFO | Batch predict | input: bad | prediction: negative | confidence: 0.97
 2025-08-20 17:46:03,958 | INFO | Batch predict | input: good | prediction: positive | confidence: 0.99
 2025-08-20 17:46:03,959 | WARNING | Batch prediction invalid input: 123
+2025-08-20 19:20:20,944 | INFO | Single predict | input: I love the product | cleaned: i love the product | prediction: positive | confidence: 0.92
+2025-08-20 19:22:04,623 | INFO | Batch predict | input: I love this product! | prediction: positive | confidence: 0.9
+2025-08-20 19:22:04,624 | INFO | Batch predict | input: This is terrible. | prediction: negative | confidence: 0.97
+2025-08-20 19:22:04,625 | INFO | Batch predict | input: Seems to be OK | prediction: negative | confidence: 0.64
+2025-08-20 19:22:04,625 | INFO | Batch predict | input: Worst product ever!!! | prediction: negative | confidence: 0.85
+2025-08-20 19:22:13,557 | INFO | Batch predict | input: I love this product! | prediction: positive | confidence: 0.9
+2025-08-20 19:22:13,559 | INFO | Batch predict | input: This is terrible. | prediction: negative | confidence: 0.97
+2025-08-20 19:22:13,559 | INFO | Batch predict | input: Seems to be fine | prediction: positive | confidence: 0.58
+2025-08-20 19:22:13,560 | INFO | Batch predict | input: Worst product ever!!! | prediction: negative | confidence: 0.85
